@@ -32,3 +32,58 @@ class Partido:
         print(f"sets: {self.sets_A} - {self.sets_B}")
         print(f"games: {self.games_A} - {self.games_B}")
         print(f"puntos: {self.puntos_A} - {self.puntos_B}")
+        
+    def sumar_punto(self, equipo):
+        if self.estado != "en curso":
+            raise Exception("El partido no está en curso.")
+        
+        if equipo == "A":
+            self.puntos_A += 1
+        elif equipo == "B":
+            self.puntos_B += 1
+        else:
+            raise ValueError("Equipo debe ser 'A' o 'B'.")
+
+        self.comprobar_game()
+        
+    def comprobar_game(self):
+        if self.puntos_A >= 4 and self.puntos_A - self.puntos_B >= 2:
+            self.games_A += 1
+            self.puntos_A = 0
+            self.puntos_B = 0
+            self.comprobar_set()
+        elif self.puntos_B >= 4 and self.puntos_B - self.puntos_A >= 2:
+            self.games_B += 1
+            self.puntos_A = 0
+            self.puntos_B = 0
+            self.comprobar_set()
+
+    def puntos_mostrar(self):
+        valores = [0, 15, 30, 40]
+        if self.puntos_A >= 3 and self.puntos_B >= 3:
+            if self.puntos_A == self.puntos_B:
+                return "40", "40 (Deuce)"
+            elif self.puntos_A > self.puntos_B:
+                return "AD", "40"
+            else:
+                return "40", "AD"
+        return str(valores[self.puntos_A]), str(valores[self.puntos_B])
+            
+    def comprobar_set(self):
+        if self.games_A >= 6 and self.games_A - self.games_B >= 2:
+            self.sets_A += 1
+            self.resultado_sets.append((self.games_A, self.games_B))
+            self.games_A = 0
+            self.games_B = 0
+        elif self.games_B >= 6 and self.games_B - self.games_A >= 2:
+            self.sets_B += 1
+            self.resultado_sets.append((self.games_A, self.games_B))
+            self.games_A = 0
+            self.games_B = 0
+        
+        if (self.sets_A == 2 or self.sets_B == 2):
+            self.estado = "finalizado"
+            if self.sets_A == 2:
+                self.ganador = "A"
+            else:
+                self.ganador = "B"
