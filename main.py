@@ -7,7 +7,10 @@ def main():
 
     partido = Partido(cancha=cancha, equipo_A=equipo_A, equipo_B=equipo_B)
     partido.iniciar_partido()
-    
+    # # Preparación temporal para probar el tie-break.
+    # partido.games_A = 6
+    # partido.games_B = 6
+    # partido.comprobar_set()
     while True:
         equipo = input("\nSumar punto al equipo (equipo_A/equipo_B) o salir: ").strip().lower()
 

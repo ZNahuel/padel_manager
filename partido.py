@@ -15,7 +15,7 @@ class Partido:
         self.sets_B = 0
         #resutado de los sets
         self.resultado_sets = []
-        self.en_tiebrake = False
+        self.en_tiebreak = False
         self.estado = "pendiente"
         self.ganador = None
         
@@ -44,7 +44,10 @@ class Partido:
         else:
             raise ValueError("Equipo debe ser 'A' o 'B'.")
 
-        self.comprobar_game()
+        if self.en_tiebreak:
+            self.comprobar_tiebreak()
+        else:
+            self.comprobar_game()
         
     def comprobar_game(self):
         if self.puntos_A >= 4 and self.puntos_A - self.puntos_B >= 2:
@@ -59,6 +62,8 @@ class Partido:
             self.comprobar_set()
 
     def puntos_mostrar(self):
+        if self.en_tiebreak:
+            return str(self.puntos_A), str(self.puntos_B)
         valores = [0, 15, 30, 40]
         if self.puntos_A >= 3 and self.puntos_B >= 3:
             if self.puntos_A == self.puntos_B:
@@ -70,12 +75,16 @@ class Partido:
         return str(valores[self.puntos_A]), str(valores[self.puntos_B])
             
     def comprobar_set(self):
-        if self.games_A >= 6 and self.games_A - self.games_B >= 2:
+        if self.games_A == 6 and self.games_B == 6:
+            self.en_tiebreak = True
+            print("Comienza el tiebreak.")
+            return
+        if (self.games_A >= 6 and self.games_A - self.games_B >= 2) or (self.games_A == 7 and self.games_B == 6):
             self.sets_A += 1
             self.resultado_sets.append((self.games_A, self.games_B))
             self.games_A = 0
             self.games_B = 0
-        elif self.games_B >= 6 and self.games_B - self.games_A >= 2:
+        elif (self.games_B >= 6 and self.games_B - self.games_A >= 2) or (self.games_B == 7 and self.games_A == 6):
             self.sets_B += 1
             self.resultado_sets.append((self.games_A, self.games_B))
             self.games_A = 0
@@ -87,3 +96,16 @@ class Partido:
                 self.ganador = "A"
             else:
                 self.ganador = "B"
+                
+    def comprobar_tiebreak(self):
+        if self.puntos_A >= 7 and self.puntos_A - self.puntos_B >= 2:
+            self.games_A += 1
+        elif self.puntos_B >= 7 and self.puntos_B - self.puntos_A >= 2:
+            self.games_B += 1
+        else:
+            return  # No hay ganador aún en el tiebreak
+        #el set terminó 7-6 o 6-7
+        self.puntos_A = 0
+        self.puntos_B = 0
+        self.en_tiebreak = False
+        self.comprobar_set()

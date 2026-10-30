@@ -14,3 +14,5 @@ Sistema de reservas y seguimiento de partidos de pádel.
 -Determina el ganador
 -Input de jugadores de ambos equipos
 -Input de cancha
+Se corrigió el nombre del atributo en __init__ -> antes = en_tiebreke ahora -> en_tiebreak
+-Se implementa el tie-break
