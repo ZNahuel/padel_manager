@@ -4,6 +4,7 @@ from uuid import uuid4 #permite generar identificadores únicos universales alea
 
 
 def crear_archivo_historial(): 
+    '''Crea un archivo de historial único para un partido y devuelve la ruta del archivo'''
     carpeta = Path(__file__).resolve().parent / "historial" #Crea una ruta para la carpeta de historial
     carpeta.mkdir(exist_ok=True) #mkdir crea la carpeta si no existe, y exist_ok=True evita errores si ya existe
     ruta = carpeta / f"partido_{uuid4().hex}.txt" #Crea una ruta para el archivo de historial
@@ -13,12 +14,14 @@ def crear_archivo_historial():
 
 
 def guardar_bloque(ruta, bloque):
+    '''Guarda un bloque de datos en el archivo de historial especificado'''
     with Path(ruta).open("a", encoding="utf-8") as archivo: #a abre el archivo en modo de append y agrega los datos al final
         texto = json.dumps(bloque, ensure_ascii=False) #Toma un objeto de Python y lo guarda directamente dentro de un archivo .json
         archivo.write(texto + "\n") 
 
 
 def leer_bloques(ruta):
+    '''Lee todos los bloques de datos del archivo de historial especificado y devuelve una lista de bloques'''
     bloques = []
     with Path(ruta).open("r", encoding="utf-8") as archivo:
         for linea in archivo:

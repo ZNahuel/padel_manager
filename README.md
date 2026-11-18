@@ -20,3 +20,7 @@ Se corrigió el nombre del atributo en __init__ -> antes = en_tiebreke ahora -> 
 -Cada partido guarda su estado inicial y el marcador despues de cada punto en un archivo .txt, con un bloque por jugada.
 -El comando "deshacer" lee el historial y restaura el marcador anterior al ultimo punto vigente, incluidos los games, los sets y el estado del partido. Si el punto había definido al ganador, el encuentro vuelve a quedar en curso.
 -Cada correcion se resgistra en el mismo archivo y conserva la jugada original
+-archivo users.py para crear usuarios
+-base_datos.py para establecer conexion con servior local de mysql
+
+- libreria de mysql: python -m pip install mysql-connector-python argon2-cffi

@@ -1,0 +1,1 @@
+{"tipo": "inicio", "equipo": null, "cancha": "Cancha 1", "equipo_A": ["Jugador A1", "Jugador A2"], "equipo_B": ["Jugador B1", "Jugador B2"], "estado": {"puntos_A": 0, "puntos_B": 0, "games_A": 0, "games_B": 0, "sets_A": 0, "sets_B": 0, "resultado_sets": [], "en_tiebreak": false, "estado": "en curso", "ganador": null}}

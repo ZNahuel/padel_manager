@@ -2,6 +2,7 @@ from manejo_archivos import (crear_archivo_historial, guardar_bloque, leer_bloqu
 
 class Partido:
     def __init__(self, cancha, equipo_A, equipo_B):
+        '''inicializa un partido con la cancha y los equipos especificados, y establece el estado inicial del partido'''
         self.cancha = cancha
         #cada equipo cointiene los nombres de sus jugadores
         self.equipo_A = equipo_A
@@ -23,6 +24,7 @@ class Partido:
         self.archivo_historial = crear_archivo_historial()
             
     def iniciar_partido(self):
+        '''inicia el partido y guarda el estado inicial en el historial'''
         if self.estado != "pendiente":
             raise Exception("El partido ya ha sido iniciado o finalizado.")
         self.estado = "en curso"
@@ -31,6 +33,7 @@ class Partido:
     
     
     def resumen(self):
+        '''muestra resumen del partido, cancha, equipos, estado, sets y games'''
         print(f"Partido en la cancha: {self.cancha}")
         print(f"Equipo A: {' / '.join(self.equipo_A)}")
         print(f"Equipo B: {' / '.join(self.equipo_B)}")
@@ -50,6 +53,7 @@ class Partido:
             print(f"Puntos: {puntos_A} - {puntos_B}")
         
     def sumar_punto(self, equipo):
+        '''suma un punto al equipo especificado y actualiza el estado del partido'''
         if self.estado != "en curso":
             raise Exception("El partido no está en curso.")
         
@@ -69,6 +73,7 @@ class Partido:
         self.guardar_estado("punto", equipo)
         
     def comprobar_game(self):
+        '''comprueba si un equipo ha ganado el game actual y actualiza los games y sets en consecuencia'''
         if self.puntos_A >= 4 and self.puntos_A - self.puntos_B >= 2:
             self.games_A += 1
             self.puntos_A = 0
@@ -81,6 +86,7 @@ class Partido:
             self.comprobar_set()
 
     def puntos_mostrar(self):
+        '''devuelve los puntos actuales en formato de padel, considerando el tiebreak y el deuce'''
         if self.en_tiebreak:
             return str(self.puntos_A), str(self.puntos_B)
         valores = [0, 15, 30, 40]
@@ -94,6 +100,7 @@ class Partido:
         return str(valores[self.puntos_A]), str(valores[self.puntos_B])
             
     def comprobar_set(self):
+        '''comprueba si un equipo ha ganado el set actual y actualiza los sets y el estado del partido en consecuencia'''
         if self.games_A == 6 and self.games_B == 6:
             self.en_tiebreak = True
             print("Comienza el tiebreak.")
@@ -117,6 +124,7 @@ class Partido:
                 self.ganador = "B"
                 
     def comprobar_tiebreak(self):
+        '''comprueba si un equipo ha ganado el tiebreak y actualiza los games, sets y estado del partido en consecuencia'''
         if self.puntos_A >= 7 and self.puntos_A - self.puntos_B >= 2:
             self.games_A += 1
         elif self.puntos_B >= 7 and self.puntos_B - self.puntos_A >= 2:
@@ -130,6 +138,7 @@ class Partido:
         self.comprobar_set()
         
     def guardar_estado(self, tipo, equipo=None):
+        '''guarda el estado actual del partido en el historial'''
         bloque = {
             "tipo": tipo,
             "equipo": equipo,
@@ -153,6 +162,7 @@ class Partido:
         guardar_bloque(self.archivo_historial, bloque)
         
     def deshacer_punto(self):
+        '''deshace el último punto registrado y restaura el estado anterior del partido'''
         estados = self.leer_estados()
         if len(estados) <= 1:
             print("No hay puntos para deshacer.")
@@ -176,6 +186,7 @@ class Partido:
         self.guardar_estado("deshacer")
     
     def leer_estados (self):
+        '''lee los estados del historial y devuelve una lista de estados en orden cronológico'''
         blolques = leer_bloques(self.archivo_historial)
         estados = []
         

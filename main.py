@@ -1,6 +1,7 @@
 from partido import Partido
 
 def main():
+    '''Función principal que permite al usuario interactuar con el sistema de gestión de partidos de pádel'''
     # equipo_A = input("Ingrese los nombres de los jugadores del equipo A separados por comas: ").strip().split(",")
     # equipo_B = input("Ingrese los nombres de los jugadores del equipo B separados por comas: ").strip().split(",")
     # cancha = input("Ingrese el número de la cancha: ")
