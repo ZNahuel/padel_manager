@@ -1,4 +1,4 @@
-import os
+import os #os para acceder a las variables de entorno
 
 import mysql.connector
 

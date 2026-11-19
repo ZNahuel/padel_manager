@@ -1,6 +1,7 @@
 # Padel Manager
 Trabajo Practico Final en py.
 Sistema de reservas y seguimiento de partidos de pádel.
+Python 3.13
 
 ## Avance actual + Seguimiento de desarrollo
 
@@ -23,4 +24,15 @@ Se corrigió el nombre del atributo en __init__ -> antes = en_tiebreke ahora -> 
 -archivo users.py para crear usuarios
 -base_datos.py para establecer conexion con servior local de mysql
 
-- libreria de mysql: python -m pip install mysql-connector-python argon2-cffi
+-libreria de mysql: python -m pip install mysql-connector-python argon2-cffi
+
+-se agrega inicio de sesion
+
+'''powershell - inicio de mysql
+$env:PADEL_DB_USER = Read-Host "Usuario de MySQL"
+$env:PADEL_DB_PASSWORD = [System.Net.NetworkCredential]::new('', (Read-Host "Contraseña de MySQL" -AsSecureString)).Password
+'''
+
+-Funcion de inicio de sesion.
+-menu para elegir entre crear usuario o iniciar sesion
+-
