@@ -1,10 +1,8 @@
 from getpass import getpass
-from argon2 import PasswordHasher #argon2 para encriptar la contraseña
+from argon2 import PasswordHasher #Argon2 genera y verifica el hash de la contraseña
 from argon2.exceptions import VerifyMismatchError
 from mysql.connector import Error, IntegrityError
 from base_datos import conectar
-from reservas import crear_reserva
-from users import iniciar_sesion
 
 
 
@@ -63,54 +61,97 @@ def registrar_usuario():
     else:
         print(f"Usuario {nombre} {apellido} registrado con ID {id_usuario}.")
 
-def iniciar_sesion():
-    """Verifica las credenciales del jugador y devuelve sus datos de sesión."""
-    email = pedir_campo("Email: ").lower()
-    password = getpass("Contraseña: ")
+def autenticar_usuario(email, password):
+    """Verifica las credenciales y devuelve la sesión del usuario."""
+    consulta = """
+        SELECT id_usuario, nombre, rol, password_hash
+        FROM usuarios
+        WHERE email = %s
+    """
+    with conectar() as conexion:
+        with conexion.cursor(dictionary=True) as cursor:
+            cursor.execute(consulta, (email.strip().lower(),))
+            usuario = cursor.fetchone()
 
-    consulta = "SELECT id_usuario, nombre, rol, password_hash FROM usuarios WHERE email = %s"
-    try:
-        #conexión con la base de datos y consulta el usuario por email
-        with conectar() as conexion:
-            with conexion.cursor(dictionary=True) as cursor:
-                cursor.execute(consulta, (email,))
-                usuario = cursor.fetchone() #fetchone() devuelve una sola fila de la consulta, o None si no hay resultados
-    # Manejo de errores de conexión y consulta a la base de datos
-    except Error as error:
-        print(f"No se pudo consultar MySQL: {error.msg}")
-        return None
-
-    # Verifica si el usuario existe y si la contraseña es correcta
     if usuario is None:
-        print("Email o contraseña incorrectos.")
         return None
 
     try:
-        # Verifica la contraseña utilizando PasswordHasher
         PasswordHasher().verify(usuario["password_hash"], password)
     except VerifyMismatchError:
-        print("Email o contraseña incorrectos.")
         return None
-    
-    # Si la verificación es exitosa, devuelve los datos del usuario
+
     return {
         "id_usuario": usuario["id_usuario"],
         "nombre": usuario["nombre"],
         "rol": usuario["rol"]
     }
 
-if __name__ == "__main__":
-    '''Permite al usuario registrar una cuenta o iniciar sesión'''
-    print("1. Registrar usuario")
-    print("2. Iniciar sesión")
-    opcion = input("Elegí una opción: ").strip()
 
-    if opcion == "1":
-        registrar_usuario()
-    elif opcion == "2":
-        sesion = iniciar_sesion()
-        if sesion is not None:
-            print(f"Bienvenido, {sesion['nombre']}. Tu ID es {sesion['id_usuario']}.")
-    else:
-        print("Opción no válida.")
+def iniciar_sesion():
+    """Pide las credenciales desde el menú de consola."""
+    email = pedir_campo("Email: ")
+    password = getpass("Contraseña: ")
+
+    try:
+        sesion = autenticar_usuario(email, password)
+    except Error as error:
+        print(f"No se pudo consultar MySQL: {error.msg}")
+        return None
+
+    if sesion is None:
+        print("Email o contraseña incorrectos.")
+
+    return sesion
+
+# def iniciar_sesion():
+#     """Verifica las credenciales del jugador y devuelve sus datos de sesión."""
+#     email = pedir_campo("Email: ").lower()
+#     password = getpass("Contraseña: ")
+
+#     consulta = "SELECT id_usuario, nombre, rol, password_hash FROM usuarios WHERE email = %s"
+#     try:
+#         #conexión con la base de datos y consulta el usuario por email
+#         with conectar() as conexion:
+#             with conexion.cursor(dictionary=True) as cursor:
+#                 cursor.execute(consulta, (email,))
+#                 usuario = cursor.fetchone() #fetchone() devuelve una sola fila de la consulta, o None si no hay resultados
+#     # Manejo de errores de conexión y consulta a la base de datos
+#     except Error as error:
+#         print(f"No se pudo consultar MySQL: {error.msg}")
+#         return None
+
+#     # Verifica si el usuario existe y si la contraseña es correcta
+#     if usuario is None:
+#         print("Email o contraseña incorrectos.")
+#         return None
+
+#     try:
+#         # Verifica la contraseña utilizando PasswordHasher
+#         PasswordHasher().verify(usuario["password_hash"], password)
+#     except VerifyMismatchError:
+#         print("Email o contraseña incorrectos.")
+#         return None
+    
+#     # Si la verificación es exitosa, devuelve los datos del usuario
+#     return {
+#         "id_usuario": usuario["id_usuario"],
+#         "nombre": usuario["nombre"],
+#         "rol": usuario["rol"]
+#     }
+
+# if __name__ == "__main__":
+#     '''Permite al usuario registrar una cuenta o iniciar sesión'''
+#     print("1. Registrar usuario")
+#     print("2. Iniciar sesión")
+#     opcion = input("Elegí una opción: ").strip()
+
+#     if opcion == "1":
+#         registrar_usuario()
+#     elif opcion == "2":
+#         sesion = iniciar_sesion()
+#         if sesion is not None:
+#             print(f"Bienvenido, {sesion['nombre']}. Tu ID es {sesion['id_usuario']}.")
+#     else:
+#         print("Opción no válida.")
     

@@ -3,6 +3,38 @@ Trabajo Practico Final en py.
 Sistema de reservas y seguimiento de partidos de pádel.
 Python 3.13
 
+## Requisitos y configuración
+
+1. Instalá Python 3.13 y MySQL. Desde la carpeta del proyecto, instalá las dependencias:
+
+- MySQL Server para guardar usuarios y reservas.
+- Una clave de OpenWeather y conexión a internet para consultar el pronóstico.
+python -m pip install customtkinter
+python -m pip install mysql-connector-python
+python -m pip install argon2-cffi
+python -m pip install requests
+
+2. En MySQL Workbench, abrí y ejecutá el archivo sql-usuarios.sql completo para crear la base padel_manager y las tablas usuarios y reservas.
+
+3. Creá 'claves.py' junto a 'base_datos.py' con tus credenciales locales. Este archivo debe estar incluido en '.gitignore'.
+
+   '''python
+   MYSQL_USER = "tu_usuario_mysql"
+   MYSQL_PASSWORD = "tu_contraseña_mysql"
+   OPENWEATHER_API_KEY = "tu_clave_openweather"
+   '''
+
+## Cómo usar el sistema
+
+- **Registrar una cuenta:** ejecutá 'python menu.py' y elegí Registrar usuario.
+- **Reservar una cancha:** ejecutá 'python interfaz.py', iniciá sesión y elegí Crear reserva. Seleccioná la cancha, ingresá una fecha y hora futuras y cargá los cuatro jugadores. Los turnos duran una hora y comienzan a la hora en punto.
+- **Consultar o modificar:** desde Mis reservas podés ver tus turnos y cambiar el horario. El sistema impide reservar la misma cancha dos veces para la misma fecha y hora.
+- **Consultar el clima:** en el formulario, pulsá Ver pronóstico para consultar la temperatura y las condiciones previstas en General Deheza mediante OpenWeather.
+
+## Marcador e historial
+
+Al iniciar un partido desde main.py, se crea un archivo .txt en la carpeta historial/ que funciona como log del partido. Cada línea contiene un bloque en formato JSON con el estado inicial, un punto o una corrección. Al usar deshacer, el sistema lee el log, restaura el marcador anterior y agrega un bloque que registra la corrección. Así se conserva la jugada original.
+
 ## Avance actual + Seguimiento de desarrollo
 
 -Clase Partido.
@@ -28,11 +60,11 @@ Se corrigió el nombre del atributo en __init__ -> antes = en_tiebreke ahora -> 
 
 -se agrega inicio de sesion
 
-'''powershell - inicio de mysql
-$env:PADEL_DB_USER = Read-Host "Usuario de MySQL"
-$env:PADEL_DB_PASSWORD = [System.Net.NetworkCredential]::new('', (Read-Host "Contraseña de MySQL" -AsSecureString)).Password
-'''
 
 -Funcion de inicio de sesion.
 -menu para elegir entre crear usuario o iniciar sesion
--
+-consultar reserva
+
+
+-Interfaz grafica
+-API del clima
